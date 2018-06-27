@@ -146,7 +146,7 @@ unsigned int LIFOPop( LIFO_t* self, void* data, const unsigned int numElements )
 /**************************************************************/
 unsigned int LIFOGetSize( LIFO_t* self )
 {
-    return self->maxSize - self->head;
+    return self->head;
 }
 
 /*
