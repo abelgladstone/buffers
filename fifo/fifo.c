@@ -1,7 +1,7 @@
 /**
  ***************************************************************
  * FIFO Implemetation
- * @author : Abel Gladstone mangam
+ * @author : AGM
  ***************************************************************
  **/
 
@@ -36,7 +36,7 @@ typedef enum
  *  void
  ***************************************************************
  **/
-static void FIFOAddElement( FIFOBuffer_t* self, void* inData );
+static void FIFOAddElement( FIFO_t* self, void* inData );
 
 /**
  ***************************************************************
@@ -48,7 +48,7 @@ static void FIFOAddElement( FIFOBuffer_t* self, void* inData );
  *  void
  ***************************************************************
  **/
-static void FIFOReadElement( FIFOBuffer_t* self, void* outData );
+static void FIFOReadElement( FIFO_t* self, void* outData );
 
 /**
  ***************************************************************
@@ -60,7 +60,7 @@ static void FIFOReadElement( FIFOBuffer_t* self, void* outData );
  *  false (0) otherwise
  ***************************************************************
  **/
-static bool FIFOIsFull( FIFOBuffer_t* self );
+static bool FIFOIsFull( FIFO_t* self );
 
 /**
  ***************************************************************
@@ -72,7 +72,7 @@ static bool FIFOIsFull( FIFOBuffer_t* self );
  *  false (0) otherwise
  ***************************************************************
  **/
-static bool FIFOIsEmpty( FIFOBuffer_t* self );
+static bool FIFOIsEmpty( FIFO_t* self );
 
 /**
  ***************************************************************
@@ -97,14 +97,14 @@ static void FIFOCopy(const char* src, char* dest, int length );
  *  the pointer to store or read the next element
  ***************************************************************
  **/
-static char* FIFOIncrementPointer( FIFOBuffer_t* self, FIFOPointer_t head );
+static char* FIFOIncrementPointer( FIFO_t* self, FIFOPointer_t head );
 
 
 /*
  * Public Functions Implementation
  */
 /**************************************************************/
-bool FIFOInit( FIFOBuffer_t* self, const unsigned int unitSize, const unsigned int maxElements, FIFOType_t type, FIFOAllocFunction fifoAlloc )
+bool FIFOInit( FIFO_t* self, const unsigned int unitSize, const unsigned int maxElements, FIFOType_t type, FIFOAllocFunction fifoAlloc )
 {
     if ( type == FIFO_FAST )
     {
@@ -132,7 +132,7 @@ bool FIFOInit( FIFOBuffer_t* self, const unsigned int unitSize, const unsigned i
 }
 
 /**************************************************************/
-unsigned int FIFOAddData( FIFOBuffer_t* self, void* dataPtr, const unsigned int numElements )
+unsigned int FIFOAddData( FIFO_t* self, void* dataPtr, const unsigned int numElements )
 {
    int i;
    for ( i = 0; i < numElements; i++ )
@@ -147,13 +147,13 @@ unsigned int FIFOAddData( FIFOBuffer_t* self, void* dataPtr, const unsigned int 
 }
 
 /**************************************************************/
-unsigned int FIFOGetSize(FIFOBuffer_t* self)
+unsigned int FIFOGetSize(FIFO_t* self)
 {
     return self->head - self->tail;
 }
 
 /**************************************************************/
-unsigned int FIFOReadData( FIFOBuffer_t* self, void* dataPtr, const unsigned int numElements )
+unsigned int FIFOReadData( FIFO_t* self, void* dataPtr, const unsigned int numElements )
 {
    int i;
    for ( i = 0; i < numElements; i++ )
@@ -167,7 +167,7 @@ unsigned int FIFOReadData( FIFOBuffer_t* self, void* dataPtr, const unsigned int
    return i;
 }
 
-unsigned int FIFOPeekData( FIFOBuffer_t* self, void* dataPtr, const unsigned int numElements )
+unsigned int FIFOPeekData( FIFO_t* self, void* dataPtr, const unsigned int numElements )
 {
    int i,j;
    char* src;
@@ -187,7 +187,7 @@ unsigned int FIFOPeekData( FIFOBuffer_t* self, void* dataPtr, const unsigned int
 }
 
 /**************************************************************/
-void FIFOClose( FIFOBuffer_t* self, FIFOFreeFunction freeCb )
+void FIFODeInit( FIFO_t* self, FIFOFreeFunction freeCb )
 {
 #ifdef FIFO_USE_CUSTOM_MALLOC
    freeCb(self->storage);
@@ -197,7 +197,7 @@ void FIFOClose( FIFOBuffer_t* self, FIFOFreeFunction freeCb )
 }
 
 /**************************************************************/
-void FIFOPrimeBuffer( FIFOBuffer_t* self, void* nullDefnition, const unsigned int numElements )
+void FIFOPrimeBuffer( FIFO_t* self, void* nullDefnition, const unsigned int numElements )
 {
     unsigned int length;
     length = ( numElements > (self->maxElements + 1))? (self->maxElements+1): numElements;
@@ -209,7 +209,7 @@ void FIFOPrimeBuffer( FIFOBuffer_t* self, void* nullDefnition, const unsigned in
  * Private Function Implementation
  */
 /**************************************************************/
-static void FIFOReadElement(FIFOBuffer_t* self, void* outData)
+static void FIFOReadElement(FIFO_t* self, void* outData)
 {
    char* src;
    src = FIFOIncrementPointer( self, FIFO_TAIL );
@@ -217,7 +217,7 @@ static void FIFOReadElement(FIFOBuffer_t* self, void* outData)
 }
 
 /**************************************************************/
-static void FIFOAddElement(FIFOBuffer_t* self, void* inData)
+static void FIFOAddElement(FIFO_t* self, void* inData)
 {
    char* dest;
    dest = FIFOIncrementPointer( self, FIFO_HEAD  );
@@ -239,7 +239,7 @@ static void FIFOCopy(const char* src, char* dest, int length)
 }
 
 /**************************************************************/
-static char* FIFOIncrementPointer( FIFOBuffer_t* self, FIFOPointer_t head )
+static char* FIFOIncrementPointer( FIFO_t* self, FIFOPointer_t head )
 {
    unsigned int* ptr;
    unsigned int offset;
@@ -250,13 +250,13 @@ static char* FIFOIncrementPointer( FIFOBuffer_t* self, FIFOPointer_t head )
 }
 
 /**************************************************************/
-static bool FIFOIsFull( FIFOBuffer_t* self )
+static bool FIFOIsFull( FIFO_t* self )
 {
    return ( ( self->head - self->tail ) == ( self->maxElements + 1 ) );
 }
 
 /**************************************************************/
-static bool FIFOIsEmpty( FIFOBuffer_t* self )
+static bool FIFOIsEmpty( FIFO_t* self )
 {
    return ( ( self->head - self->tail ) == 0 );
 }

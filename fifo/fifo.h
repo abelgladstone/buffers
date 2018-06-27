@@ -1,7 +1,7 @@
 /**
  ***************************************************************
  * FIFO Implemetation
- * @author : Abel Gladstone mangam
+ * @author : AGM
  ***************************************************************
  **/
 #ifndef FIFO_H__
@@ -40,7 +40,7 @@ typedef struct {
    unsigned int unitSize;
    unsigned int maxElements;
    FIFOType_t type;
-} FIFOBuffer_t;
+} FIFO_t;
 
 /**
  ***************************************************************
@@ -59,7 +59,7 @@ typedef struct {
  *   false (0) if failed
  ***************************************************************
  **/
-bool FIFOInit( FIFOBuffer_t* self, const unsigned int unitSize, const unsigned int maxElements, FIFOType_t type, FIFOAllocFunction fifoAlloc );
+bool FIFOInit( FIFO_t* self, const unsigned int unitSize, const unsigned int maxElements, FIFOType_t type, FIFOAllocFunction fifoAlloc );
 
 /**
  ***************************************************************
@@ -73,7 +73,7 @@ bool FIFOInit( FIFOBuffer_t* self, const unsigned int unitSize, const unsigned i
  *  returns 0 if the fifo is full
  ***************************************************************
  **/
-unsigned int FIFOAddData( FIFOBuffer_t* self, void* dataPtr,const unsigned int numElements );
+unsigned int FIFOAddData( FIFO_t* self, void* dataPtr,const unsigned int numElements );
 
 /**
  ***************************************************************
@@ -87,7 +87,7 @@ unsigned int FIFOAddData( FIFOBuffer_t* self, void* dataPtr,const unsigned int n
  *  returns 0 if the fifo is full
  ***************************************************************
  **/
-unsigned int FIFOReadData( FIFOBuffer_t* self, void* dataPtr, const unsigned int numElements );
+unsigned int FIFOReadData( FIFO_t* self, void* dataPtr, const unsigned int numElements );
 
 /**
  ***************************************************************
@@ -103,7 +103,7 @@ unsigned int FIFOReadData( FIFOBuffer_t* self, void* dataPtr, const unsigned int
  *  returns 0 if the fifo is full
  ***************************************************************
  **/
-unsigned int FIFOPeekData( FIFOBuffer_t* self, void* dataPtr, const unsigned int numElements );
+unsigned int FIFOPeekData( FIFO_t* self, void* dataPtr, const unsigned int numElements );
 
 /**
  ***************************************************************
@@ -115,7 +115,7 @@ unsigned int FIFOPeekData( FIFOBuffer_t* self, void* dataPtr, const unsigned int
  *  returns 0 if the fifo is empty
  ***************************************************************
  **/
-unsigned int FIFOGetSize( FIFOBuffer_t* self );
+unsigned int FIFOGetSize( FIFO_t* self );
 
 /**
  ***************************************************************
@@ -127,7 +127,7 @@ unsigned int FIFOGetSize( FIFOBuffer_t* self );
  *  void
  ***************************************************************
  **/
-void FIFOClose( FIFOBuffer_t* self, FIFOFreeFunction freeCb );
+void FIFODeInit( FIFO_t* self, FIFOFreeFunction freeCb );
 
 /**
  ***************************************************************
@@ -143,7 +143,7 @@ void FIFOClose( FIFOBuffer_t* self, FIFOFreeFunction freeCb );
  *  void
  ***************************************************************
  **/
-void FIFOPrimeBuffer( FIFOBuffer_t* self, void* nullDefnition, const unsigned int numElements );
+void FIFOPrimeBuffer( FIFO_t* self, void* nullDefnition, const unsigned int numElements );
 
 
 
