@@ -1,58 +1,55 @@
-CC=gcc
+CC := gcc
+CONFIG_DIR := config
+BUILD_DIR := debug
+TEST_DIR := test
+ifeq ($(OS),Windows_NT)
+TARGET_NAME := buffers.exe
+else
+TARGET_NAME := buffers.out
+endif
 
-CONFIGDIR = config
-BUILDDIR = debug
-TESTDIR = test
-TARGETNAME = buffer.out
-
-INCS = fifo \
+INCLUDE_PATHS := fifo \
 	lifo \
-	${CONFIGDIR}  \
-	${TESTDIR}
+	${CONFIG_DIR}  \
+	${TEST_DIR}
 
-SRCS = main.c fifo/fifo.c lifo/lifo.c test/buffer_test.c
+INCLUDE_PARAMS := $(addprefix -I,$(INCLUDE_PATHS))
 
-INCLUDEPARAMS = $(addprefix -I,$(INCS))
+SOURCE_FILES := $(shell find . -name '*.c' -type f)
 
-DEPS = ${CONFIGDIR}/lifo_config.h \
-	${CONFIGDIR}/fifo_config.h \
-	${TESTDIR}/buffer_test.h \
-	lifo/lifo.h \
-	fifo/fifo.h
+OBJECT_FILES := $(patsubst %.c,%.o,$(notdir $(SOURCE_FILES)))
 
-OPTS = -g3 -Wall -c
+OPTS = -g3 -Wall -c -Wno-unused-function
 
-OBJECTS = ${BUILDDIR}/main.o ${BUILDDIR}/fifo.o ${BUILDDIR}/lifo.o ${BUILDDIR}/buffer_test.o
-
-run: all
-	@echo Running the program
-	@./${BUILDDIR}/${TARGETNAME}
+.PHONY: run
+.PHONY: all
+.PHONY: link
+.PHONY: build
+.PHONY: clean
+.PHONY: pristine
 
 all: link
+	$(info Build Complete)
 
-clean: 
-	@echo Cleaning all the files
-	rm -rf ${BUILDDIR}
-
-makedir:
-	@echo Starting build
-	mkdir ${BUILDDIR}
-
-build: clean makedir ${OBJECTS}
-	@echo Building
-	
 link: build
-	@echo Linking
-	${CC} -o ${BUILDDIR}/${TARGETNAME} ${OBJECTS}
+	$(info Linking)
+	$(info The target built will be ${TARGET_NAME})
+	${CC} -o ${BUILD_DIR}/${TARGET_NAME} $(addprefix ${BUILD_DIR}/,${OBJECT_FILES})
 
-${BUILDDIR}/main.o:
-	${CC} ${OPTS} ${INCLUDEPARAMS} main.c -o ${BUILDDIR}/main.o
+build: clean ${OBJECT_FILES}
+	$(info Building)
 
-${BUILDDIR}/fifo.o:
-	${CC} ${OPTS} ${INCLUDEPARAMS} fifo/fifo.c -o ${BUILDDIR}/fifo.o
+clean: pristine
+	$(info Starting build)
+	mkdir ${BUILD_DIR}
 
-${BUILDDIR}/lifo.o:
-	${CC} ${OPTS} ${INCLUDEPARAMS} lifo/lifo.c -o ${BUILDDIR}/lifo.o
+pristine:
+	$(info Cleaning all the files)
+	rm -rf ${BUILD_DIR}
 
-${BUILDDIR}/buffer_test.o:
-	${CC} ${OPTS} -Wno-unused-function ${INCLUDEPARAMS} ${TESTDIR}/buffer_test.c -o ${BUILDDIR}/buffer_test.o
+${OBJECT_FILES}:
+	${CC} ${OPTS} ${INCLUDE_PARAMS} $(shell find . -name ${subst .o,.c,${notdir $@}} -type f) -o ${BUILD_DIR}/$@
+
+run: all
+	$(info Running the program)
+	@./${BUILD_DIR}/${TARGET_NAME}
