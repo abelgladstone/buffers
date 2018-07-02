@@ -20,7 +20,7 @@ INCLUDE_PATHS := fifo \
 
 SOURCE_DIRS = fifo \
 	lifo \
-	test \
+	${TEST_DIR} \
 
 # CAUTION - Do not edit anything below if you are not sure what you are doing.
 # STAY AWAY
