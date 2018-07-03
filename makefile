@@ -15,25 +15,25 @@ endif
 
 INCLUDE_PATHS := fifo \
 	lifo \
-	${CONFIG_DIR}  \
+	${CONFIG_DIR} \
 	${TEST_DIR}
 
 SOURCE_DIRS = fifo \
-	lifo \
-	${TEST_DIR} \
+	lifo
 
 # CAUTION - Do not edit anything below if you are not sure what you are doing.
 # STAY AWAY
 # Add -I for include paths for GCC include
 INCLUDE_PARAMS := $(addprefix -I ,$(INCLUDE_PATHS))
 
-# Find all the *.c files in the root directory and the source directories.
+# Find all the *.c files in the source directories.
 # Note sub folders are not automatically found
-SOURCE_DIRS := ${SOURCE_DIRS} .
 SOURCE_FILES := $(shell find ${SOURCE_DIRS} -maxdepth 1 -name '*.c')
+TEST_SOURCE_FILES := $(shell find ${TEST_DIR} -name '*.c')
 
 # Make all the *.c files to *.o files
-OBJECT_FILES := $(patsubst %.c,%.o,$(notdir $(SOURCE_FILES)))
+OBJECT_FILES = $(patsubst %.c,%.o,$(notdir $(SOURCE_FILES)))
+TEST_OBJECT_FILES = $(patsubst %.c,%.o,$(notdir $(TEST_SOURCE_FILES)))
 
 OPTS = -g3 -Wall -c -Wno-unused-function
 
@@ -46,14 +46,11 @@ OPTS = -g3 -Wall -c -Wno-unused-function
 
 # Compile and link default
 all: build
-	$(info Linking)
-	$(info The target built is ${BUILD_DIR}/${TARGET_NAME})
-	${CC} -o ${BUILD_DIR}/${TARGET_NAME} $(addprefix ${BUILD_DIR}/,${OBJECT_FILES})
 	$(info Build Complete)
 
 # Compile only
 build: clean ${OBJECT_FILES}
-	$(info Building)
+	$(info Source build complete)
 
 # Makes a new directory for the build after cleaning
 clean: pristine
@@ -66,10 +63,13 @@ pristine:
 	rm -rf ${BUILD_DIR}
 
 # For each object file find the corresponding c file to build from the root directory
-${OBJECT_FILES}:
+%.o:
 	${CC} ${OPTS} ${INCLUDE_PARAMS} $(shell find . -name ${subst .o,.c,${notdir $@}} -type f) -o ${BUILD_DIR}/$@
 
-# Builds and runs the program too. I don't have clue as to why I need this
-run: all
-	$(info Running the program)
+# Run Unit tests
+run_unit_tests: build ${TEST_OBJECT_FILES}
+	$(info Building unit tests)
+	$(info The target built is ${BUILD_DIR}/${TARGET_NAME})
+	${CC} -o ${BUILD_DIR}/${TARGET_NAME} $(addprefix ${BUILD_DIR}/,${OBJECT_FILES} ${TEST_OBJECT_FILES})
+	$(info Running Unit Tests)
 	@./${BUILD_DIR}/${TARGET_NAME}

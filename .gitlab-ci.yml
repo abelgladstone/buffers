@@ -1,3 +1,7 @@
-my_project:
+build:
   script:
-    make
+    make -s
+
+Unit_tests:
+  script:
+    make run_unit_tests -s

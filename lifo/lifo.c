@@ -118,7 +118,7 @@ unsigned int LIFOPush( LIFO_t* self, const void* data, const unsigned int numEle
     unsigned int i;
     for(i = 0; i < numElements; i++ )
     {
-        src = (char*)(data + i*self->unitSize);
+        src = (char*)data + i*self->unitSize;
         if( !LIFOPushElement(self,src) )
         {
             return i;
@@ -134,7 +134,7 @@ unsigned int LIFOPop( LIFO_t* self, void* data, const unsigned int numElements )
     int i;
     for(i = 0; i < numElements; i++ )
     {
-        dest = (char*)(data + i*self->unitSize );
+        dest = (char*)data + i*self->unitSize;
         if( !LIFOPopElement(self, dest) )
         {
             return i;
@@ -161,7 +161,7 @@ static bool LIFOPushElement( LIFO_t* self, const void* src )
     {
         return false;
     }
-    dest = (char*)( self->storage + self->unitSize*self->head++ );
+    dest = (char*)self->storage + self->unitSize*self->head++;
     LIFOCopy( (char*)src, dest, self->unitSize );
     return true;
 }
@@ -174,7 +174,7 @@ static bool LIFOPopElement( LIFO_t* self, void* dest )
     {
         return false;
     }
-    src = (char*)(self->storage + --self->head*self->unitSize);
+    src = (char*)self->storage + --self->head*self->unitSize;
     LIFOCopy( src, (char*)dest, self->unitSize );
     return true;
 }
