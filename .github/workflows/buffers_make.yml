@@ -9,3 +9,5 @@ jobs:
       - name: Buffers make
         run: make -s
         id: make_buffers
+        working-directory: ./buffers
+        
