@@ -1,9 +1,13 @@
 name: buffers_ci
-on: [push]
+on:
+  push:
+    branches: -master
 jobs:
-  build:
-    runs-on: [ubuntu-latest]
+  job1:
+    
+    runs-on:  [ubuntu-latest]
+    name: make buffers
     steps:
-      - name: Make buffers
-        run: make -s
+      - run: pwd
+    
         
