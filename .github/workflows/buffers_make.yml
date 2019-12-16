@@ -7,4 +7,4 @@ jobs:
     name: make buffers
     steps:
       - name: list
-      - run: pwd
+        run: pwd
