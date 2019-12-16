@@ -6,6 +6,6 @@ jobs:
     runs-on:  [ubuntu-latest]
     name: make buffers
     steps:
-      - run: pwd
+      - run: ls -la
     
         
