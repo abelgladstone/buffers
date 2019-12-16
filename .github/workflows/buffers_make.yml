@@ -2,12 +2,8 @@ name: buffers_ci
 on: [push]
 jobs:
   build:
-    
-    name: make
     runs-on: [ubuntu-latest]
     steps:
-      - name: Buffers make
-        run: ./make -s
-        id: make_buffers
-        working-directory: ./buffers
+      - name: Make buffers
+        run: make -s
         
