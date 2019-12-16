@@ -7,5 +7,4 @@ jobs:
     name: make buffers
     steps:
       - name: list
-        uses: actions/abelgladstone/buffers@master
       - run: pwd
