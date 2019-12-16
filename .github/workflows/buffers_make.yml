@@ -1,8 +1,5 @@
 name: buffers_ci
-on:
-  push:
-    branches: 
-      -master
+on: [push]
 jobs:
   job1:
     
