@@ -7,7 +7,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Buffers make
-        run: make -s
+        run: ./make -s
         id: make_buffers
         working-directory: ./buffers
         
