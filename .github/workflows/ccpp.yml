@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: make
-      run: make -s
+      run: make
     - name: unit tests
-      run: make run_unit_tests -s
+      run: make run_unit_tests
